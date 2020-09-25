@@ -29,7 +29,7 @@ function C = matrix_conv(A,B)
 
     %Trasformazione nel dominio della frequenza dei segnali di ingresso
 
-    display(sprintf('\n\t- Trasformazione nel dominio della frequenza...'))
+    display(sprintf('\n\t- Transforming to frequency domain...'))
 
     fdA = fft(A,NcR2,3);
     clear A
@@ -41,7 +41,7 @@ function C = matrix_conv(A,B)
 
     %Moltiplicazione matriciale nel dominio della frequenza
 
-    fprintf('\n\t- Moltiplicazione matriciale...')
+    fprintf('\n\t- Matrix multiplication...')
 
     completed = 0;
     old_completed = 0;
@@ -53,7 +53,7 @@ function C = matrix_conv(A,B)
         completed = round(k/NcR2*100);
         if completed~=old_completed
             old_completed = completed;
-            fprintf('\r\t- Moltiplicazione matriciale: %d',completed)
+            fprintf('\r\t- Matrix multiplication: %d',completed)
         end
         
     end
@@ -69,7 +69,7 @@ function C = matrix_conv(A,B)
         completed = round(k/NcR2*100);
         if completed~=old_completed
             old_completed = completed;
-            fprintf('\r\t- Moltiplicazione matriciale: %d',completed)
+            fprintf('\r\t- Matrix multiplication: %d',completed)
         end
         
     end
@@ -77,7 +77,7 @@ function C = matrix_conv(A,B)
 
     %Antitrasformazione nel dominio del tempo
 
-    display(sprintf('\n\t- Antitrasformazione nel dominio del tempo...'))
+    display(sprintf('\n\t- Transforming back to time domain...'))
 
     C = ifft(fdC,NcR2,3);        
     clear fdC

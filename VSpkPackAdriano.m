@@ -9,7 +9,7 @@ tic
 Mic           = 19;           %Number of microphones
 Spk           = 12;           %Number of loudspeakers
 
-DirName = 'D:\Users\adriano\Lavori\2020_CATALUNYA_JULY\21_07_2020\PedraDeLesOrenettes';
+DirName = 'D:\Users\adriano\Lavori\2020_CATALUNYA_JULY\09_07_2020\Abric de Libreres\Zylia';
 N             = 48000*0.5;     %Lenght of each IR in the MIMO matrix     
 SweepLength   = 10;            %Length of used sweep [s]
 SilenceLength = 4;             %Length of silence after each sweep [s]
@@ -45,11 +45,12 @@ for j = 1 : nfiles
   filename = fullfile(DirName, dinfo(j).name);
   fprintf("Processing file %d out of %d\n", j, nfiles);
   [filepath,name,ext] = fileparts(filename);
-  outname = strcat(filepath, "/output/", name);
+  [~, FolderName] = fileparts(DirName);
+  outname = strcat(filepath, "/output/", FolderName, name);
   fprintf("Extension = %s\n", ext);
   
   % TODO: accept both wav and w64
-  if strcmp(ext, '.w64')==0
+  if and((strcmp(ext, '.w64')==0),(strcmp(ext, '.wav')==0))
      fprintf("Wrong extension!\n");
      continue;
   end
@@ -88,7 +89,7 @@ for j = 1 : nfiles
            hold on;
            title('Before the time slicing');
            % Draw the trim point
-           plot([maxIndex maxIndex],[-1000 1000],'ro');
+           plot([maxIndex maxIndex],[-100 100],'ro');
            plot([TrimSample TrimSample+N],[0 0],'bo');
            for s = 1:Spk
                plot([TrimSample+DeltaSample*(s-1) TrimSample+N-1+DeltaSample*(s-1)],[0 0], 'go');
@@ -214,7 +215,7 @@ for j = 1 : nfiles
     STI_Signal = fftfilt(STI_IR, PinkEqFile)*10^(-3.3/20);
     
     %TODO: add normalization
-    Gain=-50 % dB, to avoid clipping
+    Gain=-80 % dB, to avoid clipping
 
     %Export 1st to 3rd order ambisonics filter matrix to WAV file
     store_fir(sprintf('%s_MIMOIR.wav',outname),MIMOIR,Fs,Gain);
