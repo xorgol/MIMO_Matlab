@@ -9,7 +9,9 @@ tic
 Mic           = 19;           %Number of microphones
 Spk           = 12;           %Number of loudspeakers
 
-DirName = 'D:\Users\adriano\Lavori\2020_CATALUNYA_JULY\09_07_2020\Abric de Libreres\Zylia';
+
+selpath = uigetdir;
+DirName = selpath;
 N             = 48000*0.5;     %Lenght of each IR in the MIMO matrix     
 SweepLength   = 10;            %Length of used sweep [s]
 SilenceLength = 4;             %Length of silence after each sweep [s]
