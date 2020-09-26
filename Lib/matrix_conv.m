@@ -12,7 +12,7 @@
 %
 % C Result signal/ir convolution matrix with dimension [ra x cb x Na+Nb-1]
 
-function C = matrix_conv(A,B)
+function C = matrix_conv(A,B) %#codegen
 
     [ra,ca,Na] = size(A);
     [rb,cb,Nb] = size(B);

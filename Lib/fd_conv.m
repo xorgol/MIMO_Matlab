@@ -1,4 +1,4 @@
-function c = fd_conv(a,b)
+function c = fd_conv(a,b) %#codegen
  
 la = length(a);
 lb = length(b);

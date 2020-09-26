@@ -41,9 +41,12 @@ if ~exist(outDir, 'dir')
     mkdir(outDir)
     fprintf('Created folder: %s\n', outDir);
 end
+progressbar('Files', 'Microphones', 'Beamforming', 'Background Noise');
+
 
 % Iterates through all files in the target folder, based on their extension
 for j = 1 : nfiles
+  
   filename = fullfile(DirName, dinfo(j).name);
   fprintf("Processing file %d out of %d\n", j, nfiles);
   [filepath,name,ext] = fileparts(filename);
@@ -68,6 +71,8 @@ for j = 1 : nfiles
 
     % perform deconvolution
     for m = 1:1:Mic
+%
+         
         fprintf('Mic: (%d/%d)\n',m,Mic);
         %Deconvolve each ir channel
         convRes = fd_conv( RecSweep(:,m), InvSweep );
@@ -106,25 +111,27 @@ for j = 1 : nfiles
            convResTrim = convRes(TrimSample:TrimSample+N); % .* win;
            plot(convResTrim);
            title('After the time slicing');
+           
            beep
         end
        
         for s = 1:Spk % iterate over the loudspeakers
             % slice the multiple sequential IRs into separate cells of MIMO matrix
             MIMOIR(s,m,:) = convRes(TrimSample+DeltaSample*(s-1):TrimSample+N-1+DeltaSample*(s-1));
+            progressbar(j/nfiles, m/Mic, [], []);
         end              
     end
 
     %plot irs to check temporal trim
-    figurename = strcat('Speaker alignment ', name);
-    figure('Name', figurename,'NumberTitle','off');
-    plot(squeeze(MIMOIR(1,:,:))');
-    title('Speaker alignment');
-    figurename = strcat('Microphone alignment ', name);
-    figure('Name', figurename,'NumberTitle','off');
-    plot(squeeze(MIMOIR(:,1,:))');
-    title('Microphone alignment');
-    drawnow
+%     figurename = strcat('Speaker alignment ', name);
+%     figure('Name', figurename,'NumberTitle','off');
+%     plot(squeeze(MIMOIR(1,:,:))');
+%     title('Speaker alignment');
+%     figurename = strcat('Microphone alignment ', name);
+%     figure('Name', figurename,'NumberTitle','off');
+%     plot(squeeze(MIMOIR(:,1,:))');
+%     title('Microphone alignment');
+%     drawnow
 
     %clear RecSweep
     clear convRes
@@ -142,6 +149,7 @@ for j = 1 : nfiles
     hZylia =zeros(19,16,4096); %[RMic x VMic x N]
     for m=1:1:19
         for c=1:1:16
+            progressbar([], [], m/19, [])
             for s=1:1:4096
                 hZylia(m,c,s)=ZyliaEnc(s+(m-1)*4096,c);
             end
@@ -174,6 +182,7 @@ for j = 1 : nfiles
     RecSweepW=zeros(size(RecSweep,1),1);
     for m=1:19
         RecSweepW=RecSweepW+fftfilt(squeeze(hZyliaW(m,1,:)),squeeze(RecSweep(:,m)));
+        progressbar([], [], [], m/19)
         fprintf('background noise mic n.%d\n',m);
     end
     
@@ -233,11 +242,15 @@ for j = 1 : nfiles
     store_fir(sprintf('%s_W_WY.wav',outname),AMBI3IR(1:1,1:2,:),Fs,Gain);
 end
 
+%Close progress bar
+% close(d)
+% close(e)
+
 fprintf("Done, processed %d files\n", nfiles);
 
-clear hZylia
-clear hSpk
-clear res
-clear AMBI3IR
+%clear hZylia
+%clear hSpk
+%clear res
+%clear AMBI3IR
 
 toc
