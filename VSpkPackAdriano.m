@@ -123,15 +123,15 @@ for j = 1 : nfiles
     end
 
     %plot irs to check temporal trim
-%     figurename = strcat('Speaker alignment ', name);
-%     figure('Name', figurename,'NumberTitle','off');
-%     plot(squeeze(MIMOIR(1,:,:))');
-%     title('Speaker alignment');
-%     figurename = strcat('Microphone alignment ', name);
-%     figure('Name', figurename,'NumberTitle','off');
-%     plot(squeeze(MIMOIR(:,1,:))');
-%     title('Microphone alignment');
-%     drawnow
+    figurename = strcat('Speaker alignment ', name);
+    figure('Name', figurename,'NumberTitle','off');
+    plot(squeeze(MIMOIR(1,:,:))');
+    title('Speaker alignment');
+    figurename = strcat('Microphone alignment ', name);
+    figure('Name', figurename,'NumberTitle','off');
+    plot(squeeze(MIMOIR(:,1,:))');
+    title('Microphone alignment');
+    drawnow
 
     %clear RecSweep
     clear convRes
@@ -157,7 +157,7 @@ for j = 1 : nfiles
     end
     % figure
     % plot(squeeze(hZylia(1,1,:)));
-    % clear ZyliaEnc;
+    clear ZyliaEnc;
 
 
     % Beamforming matrix for the Lookline Dodecahedron
@@ -248,9 +248,9 @@ end
 
 fprintf("Done, processed %d files\n", nfiles);
 
-%clear hZylia
-%clear hSpk
-%clear res
-%clear AMBI3IR
+clear hZylia
+clear hSpk
+clear res
+clear AMBI3IR
 
 toc

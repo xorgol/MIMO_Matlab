@@ -15,3 +15,6 @@ For a brief explanation visit www.adrianofarina.it/MIMO
 - Redo the UI as a single window application
 - Compile functions, and in particular fd_conv, to C
 - Process multiple folders in one go
+
+## Adapting to different hardware
+If you want to set up a MIMO system with a different Ambisonics microphone, you can just adjust the number of microphone channels in the script, and load an appropriate filter matrix [from here](http://pcfarina.eng.unipr.it/Public/Xvolver/Filter-Matrices/Aformat-2-Bformat/)
