@@ -10,13 +10,13 @@ If you have binaural IRs you can just change to AcouPar BIN instead of AcouPar P
 For a brief explanation visit www.adrianofarina.it/MIMO
 
 ## Known issues
-- Crashes if the recording is shorter than two sweeps plus their silence (but that is a failed recording anyway).
 - The progressbar disappears and then reappears again.
+- Only works on Windows, due to the progressbar library and to AcouPar
 
 ## Wishful next steps
 - Redo the UI as a single window application
 - Compile functions, and in particular fd_conv, to C
-- Process multiple folders in one go
+- Make available on Mac and Linux
 
 ## Adapting to different hardware
 If you want to set up a MIMO system with a different Ambisonics microphone, you can just adjust the number of microphone channels in the script, and load an appropriate filter matrix [from here](http://pcfarina.eng.unipr.it/Public/Xvolver/Filter-Matrices/Aformat-2-Bformat/)
