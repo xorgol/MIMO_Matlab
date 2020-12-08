@@ -22,6 +22,8 @@ SilenceLength = 4;             %Length of silence after each sweep [s]
 [InvSweep,Fs] = audioread('InvSweep_20_20KHz_10.WAV');
 DeltaSample   = (SweepLength+SilenceLength)*Fs;
 
+% Store the paths of files which produce an error
+problematicFiles = "";
 
 %% *************************************************************************************************
 %  Loading SWEEP recordings and IR deconvolution
@@ -31,34 +33,41 @@ addpath( './Lib' )                                                          % ad
 disp('Loading Sweep recording and IR deconvolution...')
 
 %List files in folder
-dinfo = dir(fullfile(DirName));
+dinfo = dir(fullfile(DirName, '**\*.w64'));
+% filelist = fullfile(DirName, '**\*.w64');
+% for j = 1:length(dinfo)
+%     disp(dinfo(j).folder);
+% end
 dinfo([dinfo.isdir]) = [];     %get rid of all directories including . and ..
 nfiles = length(dinfo);
 
-% Puts output to the output subfolder, and creates it if necessary
-outDir = strcat(DirName, '/output');
-if ~exist(outDir, 'dir')
-    mkdir(outDir)
-    fprintf('Created folder: %s\n', outDir);
-end
+
 progressbar('Files', 'Microphones', 'Beamforming', 'Background Noise');
 
 
 % Iterates through all files in the target folder, based on their extension
 for j = 1 : nfiles
   
-  filename = fullfile(DirName, dinfo(j).name);
+      % Puts output to the output subfolder, and creates it if necessary
+    outDir = strcat(dinfo(j).folder, '/output');
+    if ~exist(outDir, 'dir')
+        mkdir(outDir)
+        fprintf('Created folder: %s\n', outDir);
+    end  
+    
+  filename = fullfile(dinfo(j).folder, dinfo(j).name);
+  disp("File name = " + filename);
   fprintf("Processing file %d out of %d\n", j, nfiles);
   [filepath,name,ext] = fileparts(filename);
+  disp("File path = " + filepath);
   [~, FolderName] = fileparts(DirName);
   outname = strcat(filepath, "/output/", FolderName, name);
   fprintf("Extension = %s\n", ext);
   
-  % TODO: accept both wav and w64
-  if and((strcmp(ext, '.w64')==0),(strcmp(ext, '.wav')==0))
-     fprintf("Wrong extension!\n");
-     continue;
-  end
+%   if and((strcmp(ext, '.w64')==0),(strcmp(ext, '.wav')==0))
+%      fprintf("Wrong extension!\n");
+%      continue;
+%   end
   
   % Define the MIMO IR matrix (Speakers x Microphones x N_Samples)
   MIMOIR = zeros(Spk,Mic,N);
@@ -67,6 +76,7 @@ for j = 1 : nfiles
   % RecSweep = recorded sweep
   % Fs = sampling frequency (48000)
   % TODO: replace all instances of 48000 with a consistent variable
+  disp(filename);
   [RecSweep,Fs] = audioread(filename);
 
     % perform deconvolution
@@ -88,7 +98,7 @@ for j = 1 : nfiles
 
            %Set the trim point at the first peak
            TrimSample = maxIndex-0.1*N;
-           figureTitle = strcat('Time slicing ,',num2str(m));
+           figureTitle = strcat('Time slicing ',filename);
            figure('Name',figureTitle,'NumberTitle','off');
            subplot(2,1,1)
            plot(convRes); 
@@ -108,29 +118,40 @@ for j = 1 : nfiles
            subplot(2,1,2)
            
            % Stores the trimmed IR
-           convResTrim = convRes(TrimSample:TrimSample+N); % .* win;
-           plot(convResTrim);
-           title('After the time slicing');
+           try
+                convResTrim = convRes(TrimSample:TrimSample+N); % .* win;
+                plot(convResTrim);
+                title('After the time slicing');
+           catch
+               disp("Wrong number of sweeps!");
+               problematicFiles = strcat(problematicFiles, filename, ", Wrong number of sweeps", "\n");
+           end
+          
            
            beep
         end
        
         for s = 1:Spk % iterate over the loudspeakers
             % slice the multiple sequential IRs into separate cells of MIMO matrix
-            MIMOIR(s,m,:) = convRes(TrimSample+DeltaSample*(s-1):TrimSample+N-1+DeltaSample*(s-1));
+            try
+                MIMOIR(s,m,:) = convRes(TrimSample+DeltaSample*(s-1):TrimSample+N-1+DeltaSample*(s-1));
+            catch
+                % Error in trimming procedure
+                problematicFiles = strcat(problematicFiles, filename, ", Error in trimming procedure", "\n");
+            end
             progressbar(j/nfiles, m/Mic, [], []);
         end              
     end
 
     %plot irs to check temporal trim
-    figurename = strcat('Speaker alignment ', name);
-    figure('Name', figurename,'NumberTitle','off');
-    plot(squeeze(MIMOIR(1,:,:))');
-    title('Speaker alignment');
-    figurename = strcat('Microphone alignment ', name);
-    figure('Name', figurename,'NumberTitle','off');
-    plot(squeeze(MIMOIR(:,1,:))');
-    title('Microphone alignment');
+%     figurename = strcat('Speaker alignment ', name);
+%     figure('Name', figurename,'NumberTitle','off');
+%     plot(squeeze(MIMOIR(1,:,:))');
+%     title('Speaker alignment');
+%     figurename = strcat('Microphone alignment ', name);
+%     figure('Name', figurename,'NumberTitle','off');
+%     plot(squeeze(MIMOIR(:,1,:))');
+%     title('Microphone alignment');
     drawnow
 
     %clear RecSweep
@@ -205,7 +226,14 @@ for j = 1 : nfiles
         stSample=(i-1)*(silentDelta-crossFadeArea)+1; % start sample
         enSample=stSample+silentDelta-1;              % end sample
         % fprintf('stSample=%d\n',stSample);
-        BackGroundNoise(stSample:enSample) = BackGroundNoise(stSample:enSample)+RecSweepW(TrimSample+DeltaSample*(i-1):TrimSample+silentDelta+DeltaSample*(i-1)-1).*W;
+        try
+            BackGroundNoise(stSample:enSample) = BackGroundNoise(stSample:enSample)+RecSweepW(TrimSample+DeltaSample*(i-1):TrimSample+silentDelta+DeltaSample*(i-1)-1).*W;
+        catch
+            % Error in stitching together the background noise, usually
+            % because the recording is too short. This is not a valid
+            % measurement.
+            problematicFiles = strcat(problematicFiles, filename, ", Error in stitching (too short)", "\n");
+        end
     end
 
     % Export background noise
@@ -240,13 +268,23 @@ for j = 1 : nfiles
 
     %Export W and Y mic channels with W loudspeaker channel to WAV file
     store_fir(sprintf('%s_W_WY.wav',outname),AMBI3IR(1:1,1:2,:),Fs,Gain);
+    
+    command = "AcouPar_pu_x64.exe " + sprintf('\"%s_W_WY.wav\"',outname);
+    fprintf("%s\n", command);
+    [status, results] = system(command);
 end
 
 %Close progress bar
 % close(d)
 % close(e)
 
+
+
 fprintf("Done, processed %d files\n", nfiles);
+
+disp("These files had problems!");
+disp(problematicFiles); 
+
 
 clear hZylia
 clear hSpk
