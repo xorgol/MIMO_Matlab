@@ -1,15 +1,20 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="1658237323" file="C:\Users\prude\OneDrive\Documenti\GitHub\MIMO_Matlab\MIMOconverter.prj" location="C:\Users\prude\OneDrive\Documenti\GitHub\MIMO_Matlab" name="MIMOconverter" preferred-package-location="C:\Users\prude\OneDrive\Documenti\GitHub\MIMO_Matlab\MIMOconverter\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="2066777049" file="C:\Users\prude\OneDrive\Documenti\GitHub\MIMO_Matlab\MIMOconverter.prj" location="C:\Users\prude\OneDrive\Documenti\GitHub\MIMO_Matlab" name="MIMOconverter" preferred-package-location="C:\Users\prude\OneDrive\Documenti\GitHub\MIMO_Matlab\MIMOconverter\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>MIMOconverter</param.appname>
-    <param.icon />
-    <param.icons />
+    <param.icon>${PROJECT_ROOT}\MIMOconverter_resources\icon.ico</param.icon>
+    <param.icons>
+      <file>${PROJECT_ROOT}\MIMOconverter_resources\icon_48.png</file>
+      <file>${PROJECT_ROOT}\MIMOconverter_resources\icon_32.png</file>
+      <file>${PROJECT_ROOT}\MIMOconverter_resources\icon_24.png</file>
+      <file>${PROJECT_ROOT}\MIMOconverter_resources\icon_16.png</file>
+    </param.icons>
     <param.version>1.0</param.version>
     <param.authnamewatermark>Adriano Farina</param.authnamewatermark>
     <param.email>xorgol@gmail.com</param.email>
     <param.company>University of Barcelona</param.company>
-    <param.summary>Takes raw Zylia recordings, produces files ready to be analyzed in Aurora</param.summary>
+    <param.summary>Takes raw Zylia recordings, produces files ready to be analyzed in Aurora and a text file with the Acoustical Parameters</param.summary>
     <param.description />
-    <param.screenshot />
+    <param.screenshot>${PROJECT_ROOT}\ARTSOUNDSCAPES_icon.png</param.screenshot>
     <param.guid />
     <param.installpath.string>\xorgol\MIMO converter\</param.installpath.string>
     <param.installpath.combo>option.installpath.programfiles</param.installpath.combo>
@@ -43,11 +48,8 @@
 	 -?  print help on how to use the application 
 	 input arguments</param.help.text>
     <unset>
-      <param.icon />
-      <param.icons />
       <param.version />
       <param.description />
-      <param.screenshot />
       <param.guid />
       <param.installpath.combo />
       <param.logo />
@@ -77,12 +79,14 @@
       <file>${PROJECT_ROOT}\VSpkPackAdriano.m</file>
     </fileset.main>
     <fileset.resources>
+      <file>${PROJECT_ROOT}\AcouPar_pu_x64.exe</file>
       <file>${PROJECT_ROOT}\InvSweep_20_20KHz_10.WAV</file>
       <file>${PROJECT_ROOT}\Lib</file>
       <file>${PROJECT_ROOT}\MIMO_Beamformer</file>
       <file>${PROJECT_ROOT}\New-STI-step2.wav</file>
     </fileset.resources>
     <fileset.package>
+      <file>${PROJECT_ROOT}\AcouPar_pu_x64.exe</file>
       <file>${PROJECT_ROOT}\InvSweep_20_20KHz_10.WAV</file>
       <file>${PROJECT_ROOT}\MIMO_Beamformer</file>
       <file>${PROJECT_ROOT}\New-STI-step2.wav</file>
@@ -97,7 +101,14 @@
     <workflow />
     <matlab>
       <root>C:\Program Files\MATLAB\R2020b</root>
-      <toolboxes />
+      <toolboxes>
+        <toolbox name="matlabcoder" />
+      </toolboxes>
+      <toolbox>
+        <matlabcoder>
+          <enabled>true</enabled>
+        </matlabcoder>
+      </toolbox>
     </matlab>
     <platform>
       <unix>false</unix>

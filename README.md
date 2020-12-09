@@ -12,6 +12,7 @@ For a brief explanation visit www.adrianofarina.it/MIMO
 ## Known issues
 - The progressbar disappears and then reappears again.
 - Only works on Windows, due to the progressbar library and to AcouPar
+- Problematic files are stored as a long string full of repetitions
 
 ## Wishful next steps
 - Redo the UI as a single window application

@@ -242,7 +242,7 @@ for j = 1 : nfiles
 
     % Perform beamforming of source and microphone on the MIMO IR
     AMBI3IR = oa_matrix_convconv(hSpk,MIMOIR,hZylia);
-    
+    AMBI3IR = AMBI3IR(:,:,3071:27070);
     % Convolve the MIMOIR (room impulse response) with the Zylia matrix
     % So it is a 12x16 matrix
     STI_1W = matrix_conv(MIMOIR, hZylia);
@@ -254,7 +254,7 @@ for j = 1 : nfiles
     STI_Signal = fftfilt(STI_IR, PinkEqFile)*10^(-3.3/20);
     
     %TODO: add normalization
-    Gain=-80 % dB, to avoid clipping
+    Gain=-80; % dB, to avoid clipping
 
     %Export 1st to 3rd order ambisonics filter matrix to WAV file
     store_fir(sprintf('%s_MIMOIR.wav',outname),MIMOIR,Fs,Gain);
