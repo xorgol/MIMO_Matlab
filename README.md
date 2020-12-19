@@ -20,7 +20,7 @@ The assumption is that you have a large folder containing dozens of Impulse Resp
 - 1AMBI_3AMBI
 - 1AMBI_1AMBI
 
-To understand what they are, please refer to the [explanation page](www.adrianofarina.it/MIMO/script.html).
+To understand what they are, please refer to the [explanation page](https://www.adrianofarina.it/MIMO/script.html).
 
 ## Known issues
 - The progressbar disappears and then reappears again.
