@@ -1,5 +1,5 @@
 # MIMO_Matlab
-Made by the [Artsoundscapes Project](https://www.ub.edu/artsoundscapes/)
+Made by Adriano Farina for the [Artsoundscapes Project](https://www.ub.edu/artsoundscapes/)
 
 Converts MIMO acoustical measurements to their Impulse Responses and calculates the ISO3382 acoustical parameters using Angelo Farina's [AcouPar](http://www.angelofarina.it/Public/AcouPar).
 This is specific to our particular pairing between sound source and microphone, and to the sine sweep employed.
