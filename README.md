@@ -34,5 +34,5 @@ To understand what they are, please refer to the [explanation page](https://www.
 - Rename the acoustical parameters output file to the provided folder name
 
 ## Adapting to different hardware
-If you want to set up a MIMO system with a different Ambisonics microphone, you can just adjust the number of microphone channels in the script, and load an appropriate filter matrix [from here](http://pcfarina.eng.unipr.it/Public/Xvolver/Filter-Matrices/Aformat-2-Bformat/)
+If you want to set up a MIMO system with a different Ambisonics microphone, you can just adjust the number of microphone channels in the script, and load an appropriate filter matrix [from here](http://pcfarina.eng.unipr.it/Public/Xvolver/Filter-Matrices/Aformat-2-Bformat/).
 However, you will also need a beamforming matrix for you specific loudspeaker array.
