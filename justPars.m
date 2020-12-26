@@ -1,3 +1,8 @@
+% Adriano Farina - xorgol@gmail.com - 2020
+% Asks user for a path, then transverses every subfolder and passes every
+% file matching the filename pattern to AcouPar, which stores all the
+% values for ISO3382 acoustical parameters in acoupar_pu.txt
+
 selpath = uigetdir;
 DirName = selpath;
 %List files in folder
